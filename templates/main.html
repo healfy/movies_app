@@ -37,7 +37,7 @@
         </div>
     </div>
     <div class="container">
-    {% for q in movies %}
+    {% for q in movies %}`
           <div class="row">
             <div class="col s12">
               <ul class="tabs">
@@ -47,19 +47,19 @@
               </ul>
             </div>
             <div id="test{{ q.id }}" class="col s12">
-                <video src="{{ q.db_file.url }}" height="360"  controls poster="/media/movavi.jpg">
+                <video src="{{ q.db_file.url }}" height="360"  controls poster="https://i.ytimg.com/vi/gVP6I7D_eus/hqdefault.jpg">
                    Sorry, your browser doesn't support videos tag
                 </video>
 
             </div>
             <div id="test{{ q.mp4.id }}" class="col s12" >
-                <video src="{{ q.mp4.file.url }}" height="360" controls poster="/media/movavi.jpg">
+                <video src="{{ q.mp4.file.url }}" height="360" controls poster="https://i.ytimg.com/vi/gVP6I7D_eus/hqdefault.jpg">
                   Sorry, your browser doesn't support videos tag
                 </video>
 
             </div>
             <div id="test{{ q.webm.id }}" class="col s12">
-                <video src="{{ q.webm.file.url }}" height="360" controls poster="/media/movavi.jpg">
+                <video src="{{ q.webm.file.url }}" height="360" controls poster="https://i.ytimg.com/vi/gVP6I7D_eus/hqdefault.jpg">
                 Sorry, your browser doesn't support videos tag
                 </video>
             </div>

@@ -16,7 +16,7 @@ ENV LANG ru_RU.UTF-8
 
 RUN mkdir /app
 WORKDIR /app
-ADD ./requirements.txt /app/requirements.txt
+ADD ./ /app/
 
 RUN pip install -r requirements.txt
 CMD run.sh

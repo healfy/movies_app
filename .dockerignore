@@ -112,3 +112,5 @@ venv.bak/
 
 .vscode
 /mariadb
+/media
+docker-compose.yaml

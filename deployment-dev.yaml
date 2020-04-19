@@ -196,6 +196,8 @@ spec:
               secretKeyRef:
                 name: mariadb-dev
                 key: database
+          - name: PGPORT
+            value: '3306'
           - name: CELERY_BROKER_URL
             valueFrom:
               secretKeyRef:
