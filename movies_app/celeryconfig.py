@@ -4,7 +4,8 @@ from django.conf import settings
 
 env = os.environ
 broker_url = env.get('CELERY_BROKER_URL',
-                     'amqp://admin:mypass@celery-rabbitmq:5673')
+                     'amqp://guest:guest@localhost:5672')
+
 result_backend = env.get('CELERY_RESULT_BACKEND', broker_url)
 timezone = settings.TIME_ZONE
 
