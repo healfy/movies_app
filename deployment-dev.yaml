@@ -82,6 +82,8 @@ spec:
             requests:
               memory: 128Mi
           env:
+          - name: PGPORT
+            value: '3306'
           - name: VERSION
             value: "COMMIT_HASH"
           - name: PGHOST

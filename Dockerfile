@@ -2,8 +2,7 @@ FROM python:3.6
 ARG bonum_docker_user_id='1000'
 RUN apt-get clean; \
     apt-get update; \
-    apt-get install ffmpeg; \
-    DEBIAN_FRONTEND=noninteractive apt-get -y install sudo apt-utils locales net-tools iputils-ping iproute2 htop mc wget curl nano postgresql-client; \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install sudo apt-utils locales net-tools iputils-ping iproute2 htop mc wget ffmpeg curl nano; \
     pip install --upgrade pip; \
     pip install ipython; \
     sed -i 's/# ru_RU\.UTF-8 UTF-8/ru_RU\.UTF-8 UTF-8/' /etc/locale.gen; \
