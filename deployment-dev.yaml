@@ -87,32 +87,32 @@ spec:
           - name: PGHOST
             valueFrom:
               secretKeyRef:
-                name: moviesdb-dev
+                name: mariadb-dev
                 key: host
           - name: PGUSER
             valueFrom:
               secretKeyRef:
-                name: moviesdb-dev
+                name: mariadb-dev
                 key: username
           - name: PGPASSWORD
             valueFrom:
               secretKeyRef:
-                name: moviesdb-dev
+                name: mariadb-dev
                 key: password
           - name: PGDATABASE
             valueFrom:
               secretKeyRef:
-                name: moviesdb-dev
+                name: mariadb-dev
                 key: database
           - name: CELERY_BROKER_URL
             valueFrom:
               secretKeyRef:
-                name: rabbitmq-creds-dev
+                name: rabbitmq-creds-movies-dev
                 key: url
           - name: CELERY_RESULT_BACKEND
             valueFrom:
               secretKeyRef:
-                name: rabbitmq-creds-dev
+                name: rabbitmq-creds-movies-dev
                 key: url
           volumeMounts:
             - mountPath: /tmp/movies-static
@@ -131,7 +131,7 @@ spec:
             claimName: static-movies-pv-claim-dev
         - name: media
           persistentVolumeClaim:
-            claimName: media-pv-claim
+            claimName: media-pv-claim-dev
 
 ---
 # CELERY
@@ -183,32 +183,32 @@ spec:
           - name: PGHOST
             valueFrom:
               secretKeyRef:
-                name: moviesdb-dev
+                name: mariadb-dev
                 key: host
           - name: PGUSER
             valueFrom:
               secretKeyRef:
-                name: moviesdb-dev
+                name: mariadb-dev
                 key: username
           - name: PGPASSWORD
             valueFrom:
               secretKeyRef:
-                name: moviesdb-dev
+                name: mariadb-dev
                 key: password
           - name: PGDATABASE
             valueFrom:
               secretKeyRef:
-                name: moviesdb-dev
+                name: mariadb-dev
                 key: database
           - name: CELERY_BROKER_URL
             valueFrom:
               secretKeyRef:
-                name: rabbitmq-creds-dev
+                name: rabbitmq-creds-movies-dev
                 key: url
           - name: CELERY_RESULT_BACKEND
             valueFrom:
               secretKeyRef:
-                name: rabbitmq-creds-dev
+                name: rabbitmq-creds-movies-dev
                 key: url
           volumeMounts:
             - mountPath: /tmp/movies-static
@@ -227,7 +227,7 @@ spec:
             claimName: static-movies-pv-claim-dev
         - name: media
           persistentVolumeClaim:
-            claimName: media-pv-claim
+            claimName: media-pv-claim-dev
 
 ---
 # configmap
