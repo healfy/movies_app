@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load rest_framework %}
+{% load static %}
+{% block body %}
+    <div class="container">
+        <h2 style="color: black">Upload new Video</h2>
+        <div class="row">
+            <form enctype="multipart/form-data" method="POST" class="col s6">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="file-field input-field">
+                      <div class="btn" >
+                        <span class="white-text">Video</span>
+                        <input type="file" name="db_file">
+                      </div>
+                      <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                      </div>
+                    </div>
+                </div>
+                  <div class="row">
+                    <div class="col s12">
+                      This is an inline input field:
+                      <div class="input-field inline">
+                        <input name="url" type="text">
+                      </div>
+                    </div>
+                  </div>
+                <div class="row">
+                    <button id="button1" type="submit" class="waves-effect waves-light btn">
+                        <i class="material-icons right"></i>
+                            Upload
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <div class="container">
+    {% for q in movies %}
+          <div class="row">
+            <div class="col s12">
+              <ul class="tabs">
+                <li class="tab col s4"><a href="#test{{ q.id }}" class="active">Preview</a></li>
+                <li class="tab col s4"><a href="#test{{ q.mp4.id }}">mp4</a></li>
+                <li class="tab col s4"><a href="#test{{ q.webm.id }}">webm</a></li>
+              </ul>
+            </div>
+            <div id="test{{ q.id }}" class="col s12">
+                <video src="{{ q.db_file.url }}" height="360"  controls poster="/media/movavi.jpg">
+                   Sorry, your browser doesn't support videos tag
+                </video>
+
+            </div>
+            <div id="test{{ q.mp4.id }}" class="col s12" >
+                <video src="{{ q.mp4.file.url }}" height="360" controls poster="/media/movavi.jpg">
+                  Sorry, your browser doesn't support videos tag
+                </video>
+
+            </div>
+            <div id="test{{ q.webm.id }}" class="col s12">
+                <video src="{{ q.webm.file.url }}" height="360" controls poster="/media/movavi.jpg">
+                Sorry, your browser doesn't support videos tag
+                </video>
+            </div>
+          </div>
+    {% endfor %}
+    </div>
+
+{% endblock %}
+{% block extra_scripts %}
+{#    <script>#}
+{#    const request = async () => {#}
+{#        const result = await fetch('http://127.0.0.1:8000/api/v1/index')#}
+{##}
+{#        return result.data#}
+{#    }#}
+{#    setInterval(() => request(), 300000)#}
+{#    </script>#}
+    <script>
+  $(document).ready(function(){
+    $('.tabs').tabs();
+  });
+
+    </script>
+{% endblock %}

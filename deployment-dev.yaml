@@ -1,0 +1,246 @@
+---
+# ingress
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: dev
+  name: movies-ing-dev
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: movies.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: movies-dev
+              servicePort: 80
+
+---
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dev
+  labels:
+    app: movies-dev
+    track: dev
+    tier: backend
+  name: movies-dev
+spec:
+  selector:
+    app: movies-dev
+    track: dev
+    tier: backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+      name: rest
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: dev
+  labels:
+    app: movies-dev
+    track: dev
+    tier: backend
+  name: movies-dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: movies-dev
+      track: dev
+      tier: backend
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: movies-dev
+        track: dev
+        tier: backend
+    spec:
+      terminationGracePeriodSeconds: 15
+      containers:
+        - image: docker.io/baratrum/movies:dev
+          imagePullPolicy: "Always"
+          name: movies
+          command: ["/app/run.sh"]
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              memory: 128Mi
+          env:
+          - name: VERSION
+            value: "COMMIT_HASH"
+          - name: PGHOST
+            valueFrom:
+              secretKeyRef:
+                name: moviesdb-dev
+                key: host
+          - name: PGUSER
+            valueFrom:
+              secretKeyRef:
+                name: moviesdb-dev
+                key: username
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: moviesdb-dev
+                key: password
+          - name: PGDATABASE
+            valueFrom:
+              secretKeyRef:
+                name: moviesdb-dev
+                key: database
+          - name: CELERY_BROKER_URL
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-creds-dev
+                key: url
+          - name: CELERY_RESULT_BACKEND
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-creds-dev
+                key: url
+          volumeMounts:
+            - mountPath: /tmp/movies-static
+              name: static-movies-dev
+            - name: media
+              mountPath: /app/media
+            - name: config
+              mountPath: "/etc/movies_app"
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: movies-local-settings-dev
+        - name: static-movies-dev
+          persistentVolumeClaim:
+            claimName: static-movies-pv-claim-dev
+        - name: media
+          persistentVolumeClaim:
+            claimName: media-pv-claim
+
+---
+# CELERY
+# deployment
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  namespace: dev
+  labels:
+    app: movies-dev
+    track: dev
+    tier: backend
+  name: movies-celery-dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: movies-celery-dev
+      track: dev
+      tier: backend
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: movies-celery-dev
+        track: dev
+        tier: backend
+    spec:
+      terminationGracePeriodSeconds: 15
+      containers:
+        - image: docker.io/baratrum/movies:dev
+          imagePullPolicy: "Always"
+          name: movies
+          command: ["/bin/bash"]
+          args:
+            - "/app/run_celery.sh"
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              memory: 128Mi
+          env:
+          - name: VERSION
+            value: "COMMIT_HASH"
+          - name: PGHOST
+            valueFrom:
+              secretKeyRef:
+                name: moviesdb-dev
+                key: host
+          - name: PGUSER
+            valueFrom:
+              secretKeyRef:
+                name: moviesdb-dev
+                key: username
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: moviesdb-dev
+                key: password
+          - name: PGDATABASE
+            valueFrom:
+              secretKeyRef:
+                name: moviesdb-dev
+                key: database
+          - name: CELERY_BROKER_URL
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-creds-dev
+                key: url
+          - name: CELERY_RESULT_BACKEND
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-creds-dev
+                key: url
+          volumeMounts:
+            - mountPath: /tmp/movies-static
+              name: static-movies-dev
+            - name: media
+              mountPath: /app/media
+            - name: config
+              mountPath: "/etc/movies_app"
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: movies-local-settings-dev
+        - name: static-movies-dev
+          persistentVolumeClaim:
+            claimName: static-movies-pv-claim-dev
+        - name: media
+          persistentVolumeClaim:
+            claimName: media-pv-claim
+
+---
+# configmap
+apiVersion: v1
+kind: ConfigMap
+data:
+  local_settings.py: |
+    DEBUG=True
+    VIDEO_ENCODING_THREADS = 4
+metadata:
+  name: movies-local-settings-dev
+  namespace: dev
+  labels:
+    app: movies-dev
+    tier: backend
+    track: dev
