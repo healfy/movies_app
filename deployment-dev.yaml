@@ -237,6 +237,7 @@ data:
   local_settings.py: |
     DEBUG=True
     VIDEO_ENCODING_THREADS = 4
+    ALLOWED_HOSTS = ['*']
 metadata:
   name: movies-local-settings-dev
   namespace: dev
