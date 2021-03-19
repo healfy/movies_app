@@ -9,7 +9,7 @@ decorator==4.4.2
 Django==3.0.5
 django-appconf==1.0.4
 django-video-encoding==0.4.0
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 future==0.18.2
 idna==2.9
 importlib-metadata==1.6.0
